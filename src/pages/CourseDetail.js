@@ -20,7 +20,7 @@ const CourseDetail = () => {
       await API.post(`/courses/${id}/enroll`);
       alert("Enrolled successfully!");
     } catch (err) {
-      alert("Error enrolling: " + err.response?.data?.message || err.message);
+      alert("Error enrolling: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -39,7 +39,9 @@ const CourseDetail = () => {
       {course.lessons.length === 0 ? <p>No lessons added.</p> : (
         <ul>
           {course.lessons.map((lesson) => (
-            <li key={lesson._id}>{lesson.title}</li>
+            <li key={lesson._id}>
+              <Link to={`/lessons/${lesson._id}`}>{lesson.title}</Link>
+            </li>
           ))}
         </ul>
       )}

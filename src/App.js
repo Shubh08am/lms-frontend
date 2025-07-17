@@ -10,6 +10,8 @@ import Progress from "./pages/Progress";
 import CreateCourse from "./pages/CreateCourse";
 import AddLesson from "./pages/AddLesson";
 import AddQuiz from "./pages/AddQuiz";
+import LessonView from "./pages/LessonView";
+
 
 function App() {
   return (
@@ -27,7 +29,9 @@ function App() {
           {/* Admin Routes */}
           <Route path="/admin/create-course" element={<CreateCourse />} />
           <Route path="/admin/add-lesson/:id" element={<AddLesson />} />
-          <Route path="/admin/add-quiz/:id" element={<AddQuiz />} />
+          <Route path="/admin/add-quiz/:id" element={<AddQuiz />} /> 
+          <Route path="/lessons/:id" element={<LessonView />} />
+
         </Routes>
       </Router>
     </AuthProvider>
