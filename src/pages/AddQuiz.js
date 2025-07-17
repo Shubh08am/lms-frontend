@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom"; // ✅ get courseId from route
+import { useParams } from "react-router-dom";
 import API from "../api/api";
 
 const AddQuiz = () => {
-  const { id: courseId } = useParams(); // ✅ this replaces manual input
+  const { id: courseId } = useParams(); // ✅ Get course ID from /admin/add-quiz/:id
+
   const [title, setTitle] = useState("");
   const [questions, setQuestions] = useState([
     { text: "", options: ["", "", "", ""], correctIndex: 0 }
@@ -11,7 +12,11 @@ const AddQuiz = () => {
 
   const handleQuestionChange = (index, field, value) => {
     const updated = [...questions];
-    updated[index][field] = field === "correctIndex" ? parseInt(value) : value;
+    if (field === "correctIndex") {
+      updated[index][field] = parseInt(value);
+    } else {
+      updated[index][field] = value;
+    }
     setQuestions(updated);
   };
 
@@ -31,7 +36,7 @@ const AddQuiz = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await API.post(`/courses/${courseId}/quizzes`, { title, questions });
+      await API.post(`/courses/${courseId}/quizzes`, { title, questions }); // ✅ courseId from URL
       alert("Quiz added successfully!");
       setTitle("");
       setQuestions([{ text: "", options: ["", "", "", ""], correctIndex: 0 }]);
@@ -40,9 +45,13 @@ const AddQuiz = () => {
     }
   };
 
+  if (!courseId) return <h3>❌ Invalid Course ID in URL</h3>;
+
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Add Quiz to Course ID: {courseId}</h2>
+      <h2>Add Quiz to Course</h2>
+      <p><strong>Course ID:</strong> {courseId}</p>
+
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
@@ -83,9 +92,7 @@ const AddQuiz = () => {
         ➕ Add Question
       </button>
       <br />
-      <button type="submit" style={{ marginTop: "10px" }}>
-        ✅ Submit Quiz
-      </button>
+      <button type="submit" style={{ marginTop: "10px" }}>✅ Submit Quiz</button>
     </form>
   );
 };

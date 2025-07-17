@@ -24,11 +24,11 @@ const CreateCourse = () => {
         price: Number(form.price)
       });
 
-      const courseId = res.data.course._id; // 👈 get course ID
+      const courseId = res.data.course._id;
       alert("Course created successfully!");
 
-      // Redirect to AddLesson page
-      navigate(`/add-lesson/${courseId}`);
+      // Go to add lesson first
+      navigate(`/admin/add-lesson/${courseId}`);
     } catch (err) {
       alert("Error creating course: " + (err.response?.data?.message || err.message));
     }
@@ -37,35 +37,10 @@ const CreateCourse = () => {
   return (
     <form onSubmit={handleSubmit}>
       <h2>Create Course (Admin)</h2>
-      <input
-        name="title"
-        placeholder="Title"
-        value={form.title}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="description"
-        placeholder="Description"
-        value={form.description}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="instructor"
-        placeholder="Instructor"
-        value={form.instructor}
-        onChange={handleChange}
-        required
-      />
-      <input
-        name="price"
-        type="number"
-        placeholder="Price"
-        value={form.price}
-        onChange={handleChange}
-        required
-      />
+      <input name="title" placeholder="Title" value={form.title} onChange={handleChange} required />
+      <input name="description" placeholder="Description" value={form.description} onChange={handleChange} required />
+      <input name="instructor" placeholder="Instructor" value={form.instructor} onChange={handleChange} required />
+      <input name="price" type="number" placeholder="Price" value={form.price} onChange={handleChange} required />
       <button type="submit">Create</button>
     </form>
   );

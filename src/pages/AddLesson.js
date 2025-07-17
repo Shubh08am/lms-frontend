@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom"; // ✅ to get courseId from URL
+import { useParams } from "react-router-dom";
 import API from "../api/api";
 
 const AddLesson = () => {
-  const { id: courseId } = useParams(); // 👈 gets ":id" from route
+  const { id: courseId } = useParams(); // ✅ Get courseId from route
+
   const [form, setForm] = useState({
     title: "",
     content: "",
@@ -17,19 +18,17 @@ const AddLesson = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await API.post(`/courses/${courseId}/lessons`, form);
-      console.log("Lesson added:", res.data);
+      await API.post(`/courses/${courseId}/lessons`, form); // ✅ Valid request
       alert("Lesson added successfully!");
       setForm({ title: "", content: "", videoUrl: "" });
     } catch (err) {
-      console.error("Error adding lesson:", err);
-      alert("Error: " + (err.response?.data?.message || err.message || "Unknown error"));
+      alert("Error: " + (err.response?.data?.message || err.message));
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Add Lesson to Course ID: {courseId}</h2>
+      <h2>Add Lesson to Course</h2>
       <input
         name="title"
         placeholder="Lesson Title"
@@ -50,7 +49,7 @@ const AddLesson = () => {
         value={form.videoUrl}
         onChange={handleChange}
       />
-      <button type="submit">Add Lesson</button>
+      <button type="submit" style={{ marginTop: "10px" }}>Add Lesson</button>
     </form>
   );
 };
