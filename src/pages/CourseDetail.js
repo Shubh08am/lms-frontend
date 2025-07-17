@@ -1,18 +1,33 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import API from "../api/api";
 
 const CourseDetail = () => {
   const { id } = useParams(); // courseId
   const [course, setCourse] = useState(null);
-  const navigate = useNavigate();
+  const [completedLessons, setCompletedLessons] = useState([]);
 
   useEffect(() => {
     const fetchCourse = async () => {
-      const res = await API.get(`/courses/${id}`);
-      setCourse(res.data);
+      try {
+        const res = await API.get(`/courses/${id}`);
+        setCourse(res.data);
+      } catch (err) {
+        console.error("Course fetch error:", err);
+      }
     };
+
+    const fetchProgress = async () => {
+      try {
+        const res = await API.get(`/progress/${id}`); // course ID
+        setCompletedLessons(res.data.completedLessons || []);
+      } catch (err) {
+        console.error("Progress fetch error:", err);
+      }
+    };
+
     fetchCourse();
+    fetchProgress();
   }, [id]);
 
   const enroll = async () => {
@@ -35,19 +50,29 @@ const CourseDetail = () => {
 
       <button onClick={enroll}>Enroll</button>
 
-      <h3>Lessons</h3>
-      {course.lessons.length === 0 ? <p>No lessons added.</p> : (
+      <h3>
+        Lessons ({completedLessons.length} / {course.lessons.length} completed)
+      </h3>
+
+      {course.lessons.length === 0 ? (
+        <p>No lessons added.</p>
+      ) : (
         <ul>
           {course.lessons.map((lesson) => (
             <li key={lesson._id}>
-              <Link to={`/lessons/${lesson._id}`}>{lesson.title}</Link>
+              <Link to={`/lessons/${lesson._id}`}>
+                {lesson.title}
+                {completedLessons.includes(lesson._id) && " ✅"}
+              </Link>
             </li>
           ))}
         </ul>
       )}
 
       <h3>Quizzes</h3>
-      {course.quizzes.length === 0 ? <p>No quizzes yet.</p> : (
+      {course.quizzes.length === 0 ? (
+        <p>No quizzes yet.</p>
+      ) : (
         <ul>
           {course.quizzes.map((quiz) => (
             <li key={quiz._id}>

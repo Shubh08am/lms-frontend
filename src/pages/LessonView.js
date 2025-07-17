@@ -1,4 +1,3 @@
-// In LessonView.js
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import API from "../api/api";
@@ -9,9 +8,17 @@ const LessonView = () => {
 
   useEffect(() => {
     const fetchLesson = async () => {
-      const res = await API.get(`/lessons/${id}`);
-      setLesson(res.data);
+      try {
+        const res = await API.get(`/lessons/${id}`);
+        setLesson(res.data);
+
+        // ✅ Mark lesson as completed when viewed
+        await API.post(`/progress/complete/${id}`);
+      } catch (err) {
+        console.error("Error loading or completing lesson:", err);
+      }
     };
+
     fetchLesson();
   }, [id]);
 
@@ -36,6 +43,7 @@ const LessonView = () => {
     <div>
       <h2>{lesson.title}</h2>
       <p>{lesson.content}</p>
+
       {lesson.videoUrl && getEmbedUrl(lesson.videoUrl) && (
         <div>
           <h4>Video:</h4>
