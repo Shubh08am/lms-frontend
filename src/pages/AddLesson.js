@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom"; // ✅ to get courseId from URL
 import API from "../api/api";
 
 const AddLesson = () => {
+  const { id: courseId } = useParams(); // 👈 gets ":id" from route
   const [form, setForm] = useState({
-    courseId: "",
     title: "",
     content: "",
     videoUrl: ""
@@ -16,15 +17,10 @@ const AddLesson = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Submitting to /courses/", form.courseId);
-      const res = await API.post(`/courses/${form.courseId}/lessons`, {
-        title: form.title,
-        content: form.content,
-        videoUrl: form.videoUrl
-      });
+      const res = await API.post(`/courses/${courseId}/lessons`, form);
       console.log("Lesson added:", res.data);
       alert("Lesson added successfully!");
-      setForm({ courseId: "", title: "", content: "", videoUrl: "" });
+      setForm({ title: "", content: "", videoUrl: "" });
     } catch (err) {
       console.error("Error adding lesson:", err);
       alert("Error: " + (err.response?.data?.message || err.message || "Unknown error"));
@@ -33,14 +29,7 @@ const AddLesson = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Add Lesson to Course</h2>
-      <input
-        name="courseId"
-        placeholder="Course ID"
-        value={form.courseId}
-        onChange={handleChange}
-        required
-      />
+      <h2>Add Lesson to Course ID: {courseId}</h2>
       <input
         name="title"
         placeholder="Lesson Title"

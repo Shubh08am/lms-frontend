@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom"; // ✅ get courseId from route
 import API from "../api/api";
 
 const AddQuiz = () => {
-  const [courseId, setCourseId] = useState("");
+  const { id: courseId } = useParams(); // ✅ this replaces manual input
   const [title, setTitle] = useState("");
   const [questions, setQuestions] = useState([
     { text: "", options: ["", "", "", ""], correctIndex: 0 }
@@ -10,11 +11,7 @@ const AddQuiz = () => {
 
   const handleQuestionChange = (index, field, value) => {
     const updated = [...questions];
-    if (field === "correctIndex") {
-      updated[index][field] = parseInt(value);
-    } else {
-      updated[index][field] = value;
-    }
+    updated[index][field] = field === "correctIndex" ? parseInt(value) : value;
     setQuestions(updated);
   };
 
@@ -36,7 +33,6 @@ const AddQuiz = () => {
     try {
       await API.post(`/courses/${courseId}/quizzes`, { title, questions });
       alert("Quiz added successfully!");
-      setCourseId("");
       setTitle("");
       setQuestions([{ text: "", options: ["", "", "", ""], correctIndex: 0 }]);
     } catch (err) {
@@ -46,13 +42,7 @@ const AddQuiz = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2>Add Quiz to Course</h2>
-      <input
-        value={courseId}
-        onChange={(e) => setCourseId(e.target.value)}
-        placeholder="Course ID"
-        required
-      />
+      <h2>Add Quiz to Course ID: {courseId}</h2>
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
@@ -93,7 +83,9 @@ const AddQuiz = () => {
         ➕ Add Question
       </button>
       <br />
-      <button type="submit" style={{ marginTop: "10px" }}>✅ Submit Quiz</button>
+      <button type="submit" style={{ marginTop: "10px" }}>
+        ✅ Submit Quiz
+      </button>
     </form>
   );
 };

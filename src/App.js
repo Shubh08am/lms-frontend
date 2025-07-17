@@ -11,9 +11,6 @@ import CreateCourse from "./pages/CreateCourse";
 import AddLesson from "./pages/AddLesson";
 import AddQuiz from "./pages/AddQuiz";
 
-
-
-
 function App() {
   return (
     <AuthProvider>
@@ -26,12 +23,11 @@ function App() {
           <Route path="/courses/:id" element={<CourseDetail />} />
           <Route path="/quiz/:id" element={<QuizAttempt />} />
           <Route path="/progress" element={<Progress />} />
+
+          {/* Admin Routes */}
           <Route path="/admin/create-course" element={<CreateCourse />} />
-          <Route path="/admin/add-lesson" element={<AddLesson />} />
-          <Route path="/admin/add-quiz" element={<AddQuiz />} />
-
-
-
+          <Route path="/admin/add-lesson/:id" element={<AddLesson />} />
+          <Route path="/admin/add-quiz/:id" element={<AddQuiz />} />
         </Routes>
       </Router>
     </AuthProvider>
